@@ -27,9 +27,9 @@ class Header extends React.Component {
     const { dadosUsuario: { name }, loading } = this.state;
     return (
       <header data-testid="header-component">
-        <Link to="/search" data-testid="link-to-search" />
-        <Link to="/favorites" data-testid="link-to-favorites" />
-        <Link to="/profile" data-testid="link-to-profile" />
+        <Link to="/search" data-testid="link-to-search">Pesquisa</Link>
+        <Link to="/favorites" data-testid="link-to-favorites">Favoritas</Link>
+        <Link to="/profile" data-testid="link-to-profile">Perfil</Link>
         <div data-testid="header-user-name">
           { name }
           {loading ? <Loading /> : null }
