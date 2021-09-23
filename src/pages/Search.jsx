@@ -44,6 +44,8 @@ class Search extends React.Component {
       <p>Nenhum álbum foi encontrado</p>
     );
   }
+  // Primeira vez que passei uma props sozinho, sabendo e entendendo o que estava fazendo.
+  // Devo mais uma pra Issac Matheus. Grato de mais!
 
   foundMessage(userChoise, name) {
     return (
@@ -76,6 +78,7 @@ class Search extends React.Component {
           >
             Pesquisar
           </button>
+          {/* logica do ternario refatorada, com ajuda e guia espiritual do amigo e gurú, Lucas Duarte. Obg! */}
           {
             userChoise.length > 0
               ? this.foundMessage(userChoise, name)

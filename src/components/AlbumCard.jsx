@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
+// Sugestão de criar o componente, Issa Matheus. Salvou! Obg!!!
 class AlbumCard extends React.Component {
   render() {
     const { album } = this.props;
