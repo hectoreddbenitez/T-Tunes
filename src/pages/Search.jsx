@@ -1,5 +1,8 @@
 import React from 'react';
+import AlbumCard from '../components/AlbumCard';
 import Header from '../components/Header';
+import Loading from '../components/Loading';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
 
 class Search extends React.Component {
   constructor() {
@@ -7,9 +10,11 @@ class Search extends React.Component {
     this.state = {
       button: true,
       value: '',
-    //   loading: false,
-    //   redirect: false,
+      loading: false,
+      userChoise: [],
+      name: '',
     };
+    this.foundMessage = this.foundMessage.bind(this);
   }
 
   handleBtnEnabel = ({ target: { value } }) => {
@@ -20,8 +25,39 @@ class Search extends React.Component {
     });
   };
 
+  handleClick = () => {
+    const { value } = this.state;
+    this.setState({ loading: true }, async () => {
+      const album = await searchAlbumsAPI(value);
+      // this.renderMessage();
+      this.setState((previusState) => ({
+        value: '',
+        userChoise: album,
+        loading: false,
+        name: previusState.value,
+      }));
+    });
+  }
+
+  notFoundMessage() {
+    return (
+      <p>Nenhum álbum foi encontrado</p>
+    );
+  }
+
+  foundMessage(userChoise, name) {
+    return (
+      <>
+        <p>{`Resultado de álbuns de: ${name}`}</p>
+        {userChoise.map((album) => (
+          <AlbumCard key={ album.id } album={ album } />
+        ))}
+      </>
+    );
+  }
+
   render() {
-    const { button, value } = this.state;
+    const { button, value, loading, userChoise, name } = this.state;
     return (
       <div data-testid="page-search">
         <Header />
@@ -36,9 +72,16 @@ class Search extends React.Component {
             type="button"
             data-testid="search-artist-button"
             disabled={ button }
+            onClick={ this.handleClick }
           >
             Pesquisar
           </button>
+          {
+            userChoise.length > 0
+              ? this.foundMessage(userChoise, name)
+              : this.notFoundMessage()
+          }
+          {loading ? <Loading /> : null }
         </form>
       </div>
     );
