@@ -5,6 +5,7 @@ import Loading from '../components/Loading';
 import MusicCard from '../components/MusicCard';
 import getMusics from '../services/musicsAPI';
 import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
+// Mais uma vez, o Lucas Duarte dando uma salvada monumental. Colega TOP!
 
 class Album extends React.Component {
   constructor() {
@@ -59,7 +60,6 @@ class Album extends React.Component {
     const result = favoriteMusic.some((song) => song.trackId === music.trackId);
     return result;
   }
-  // Mais uma vez, o Lucas dando uma salvada monumental!
 
   renderAlbum = (albumName, artist, musics, favoriteMusic) => (
     <>
