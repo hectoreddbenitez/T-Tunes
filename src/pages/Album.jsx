@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Loading from '../components/Loading';
 import MusicCard from '../components/MusicCard';
 import getMusics from '../services/musicsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 
 class Album extends React.Component {
   constructor() {
@@ -13,11 +14,13 @@ class Album extends React.Component {
       artist: '',
       musics: [],
       loading: false,
+      favoriteMusic: [],
     };
   }
 
   componentDidMount() {
     this.albumChoiced();
+    this.getFavorites();
   }
 
   albumChoiced = async () => {
@@ -33,27 +36,55 @@ class Album extends React.Component {
       });
     });
   }
+
+  onChange = ({ target }, music) => {
+    const action = target.checked ? addSong : removeSong;
+    this.setState({ loading: true }, async () => {
+      await action(music);
+      this.getFavorites();
+    });
+  }
+
+  getFavorites = () => {
+    this.setState({ loading: true }, async () => {
+      const favoriteList = await getFavoriteSongs();
+      this.setState({
+        loading: false,
+        favoriteMusic: favoriteList,
+      });
+    });
+  }
+
+  isFavorite = (music, favoriteMusic) => {
+    const result = favoriteMusic.some((song) => song.trackId === music.trackId);
+    return result;
+  }
   // Mais uma vez, o Lucas dando uma salvada monumental!
 
-  renderAlbum = (albumName, artist, musics) => (
+  renderAlbum = (albumName, artist, musics, favoriteMusic) => (
     <>
       <h2 data-testid="album-name">{albumName}</h2>
       <h3 data-testid="artist-name">{artist}</h3>
       {musics.map((music) => (
-        <MusicCard key="" music={ music } />
+        <MusicCard
+          key={ music.trackId }
+          music={ music }
+          onChange={ this.onChange }
+          isFavorite={ this.isFavorite(music, favoriteMusic) }
+        />
       ))}
     </>
   )
 
   render() {
-    const { albumName, artist, musics, loading } = this.state;
+    const { albumName, artist, musics, loading, favoriteMusic } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
         {
           loading
             ? <Loading />
-            : this.renderAlbum(albumName, artist, musics)
+            : this.renderAlbum(albumName, artist, musics, favoriteMusic)
         }
       </div>
     );
@@ -61,7 +92,7 @@ class Album extends React.Component {
 }
 
 Album.propTypes = {
-  match: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  match: PropTypes.objectOf(PropTypes.any).isRequired,
 };
 
 export default Album;
